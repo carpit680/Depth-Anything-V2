@@ -31,22 +31,40 @@ import torch
 from depth_anything_v2.dpt import DepthAnythingV2
 
 
+def create_comparison_cube():
+    """
+    Create a 50x50x50 mm cube for size comparison.
+    The cube is positioned in front of the origin (Z > 0).
+    """
+    cube = o3d.geometry.TriangleMesh.create_box(width=0.05, height=0.05, depth=0.05)
+    cube.paint_uniform_color([1, 0, 0])  # Red color for visibility
+    cube.translate((0, 0, 0.7))  # Position the cube in front of the origin
+    return cube
+
+def create_coordinate_axes():
+    """
+    Create a coordinate frame with X, Y, Z axes for reference.
+    """
+    axes = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=[0, 0, 0])
+    return axes
+
+
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description='Generate depth maps and point clouds from images.')
     parser.add_argument('--encoder', default='vitl', type=str, choices=['vits', 'vitb', 'vitl', 'vitg'],
                         help='Model encoder to use.')
-    parser.add_argument('--load-from', default='', type=str, required=True,
+    parser.add_argument('--load-from', default='checkpoints/depth_anything_v2_metric_hypersim_vitl.pth', type=str, required=False,
                         help='Path to the pre-trained model weights.')
     parser.add_argument('--max-depth', default=20, type=float,
                         help='Maximum depth value for the depth map.')
-    parser.add_argument('--img-path', type=str, required=True,
+    parser.add_argument('--img-path', default='test.JPG',type=str, required=False,
                         help='Path to the input image or directory containing images.')
     parser.add_argument('--outdir', type=str, default='./vis_pointcloud',
                         help='Directory to save the output point clouds.')
-    parser.add_argument('--focal-length-x', default=470.4, type=float,
+    parser.add_argument('--focal-length-x', default=413.08, type=float,
                         help='Focal length along the x-axis.')
-    parser.add_argument('--focal-length-y', default=470.4, type=float,
+    parser.add_argument('--focal-length-y', default=413.08, type=float,
                         help='Focal length along the y-axis.')
 
     args = parser.parse_args()
@@ -80,6 +98,12 @@ def main():
     # Create the output directory if it doesn't exist
     os.makedirs(args.outdir, exist_ok=True)
 
+    # Create the comparison cube
+    comparison_cube = create_comparison_cube()
+
+    # Create coordinate axes
+    coordinate_axes = create_coordinate_axes()
+
     # Process each image file
     for k, filename in enumerate(filenames):
         print(f'Processing {k+1}/{len(filenames)}: {filename}')
@@ -107,8 +131,13 @@ def main():
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(points)
         pcd.colors = o3d.utility.Vector3dVector(colors)
-        o3d.io.write_point_cloud(os.path.join(args.outdir, os.path.splitext(os.path.basename(filename))[0] + ".ply"), pcd)
 
+        # Add the comparison cube and coordinate axes to the scene
+        o3d.visualization.draw_geometries([pcd, comparison_cube, coordinate_axes])
+
+        # Save the point cloud to a file
+        output_file = os.path.join(args.outdir, f'pointcloud_{k+1}.ply')
+        o3d.io.write_point_cloud(output_file, pcd)
 
 if __name__ == '__main__':
     main()
