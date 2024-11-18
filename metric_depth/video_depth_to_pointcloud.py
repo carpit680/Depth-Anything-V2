@@ -39,9 +39,9 @@ def main():
                         help='Maximum depth value for the depth map.')
     parser.add_argument('--vid-path', default='test.mp4', type=str, required=False,
                         help='Path to the input video.')
-    parser.add_argument('--focal-length-x', default=413.08, type=float,
+    parser.add_argument('--focal-length-x', default=550.89, type=float,
                         help='Focal length along the x-axis.')
-    parser.add_argument('--focal-length-y', default=413.08, type=float,
+    parser.add_argument('--focal-length-y', default=550.89, type=float,
                         help='Focal length along the y-axis.')
 
     args = parser.parse_args()

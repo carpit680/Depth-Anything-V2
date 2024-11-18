@@ -63,9 +63,9 @@ def main():
                         help='Path to the input image or directory containing images.')
     parser.add_argument('--outdir', type=str, default='./vis_pointcloud',
                         help='Directory to save the output point clouds.')
-    parser.add_argument('--focal-length-x', default=413.08, type=float,
+    parser.add_argument('--focal-length-x', default=550.89, type=float,
                         help='Focal length along the x-axis.')
-    parser.add_argument('--focal-length-y', default=413.08, type=float,
+    parser.add_argument('--focal-length-y', default=550.89, type=float,
                         help='Focal length along the y-axis.')
 
     args = parser.parse_args()
