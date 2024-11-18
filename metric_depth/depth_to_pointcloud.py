@@ -29,7 +29,8 @@ from PIL import Image
 import torch
 
 from depth_anything_v2.dpt import DepthAnythingV2
-
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 def create_comparison_cube():
     """
@@ -58,7 +59,7 @@ def main():
                         help='Path to the pre-trained model weights.')
     parser.add_argument('--max-depth', default=2, type=float,
                         help='Maximum depth value for the depth map.')
-    parser.add_argument('--img-path', default='test1.JPG',type=str, required=False,
+    parser.add_argument('--img-path', default='test1.jpg',type=str, required=False,
                         help='Path to the input image or directory containing images.')
     parser.add_argument('--outdir', type=str, default='./vis_pointcloud',
                         help='Directory to save the output point clouds.')
