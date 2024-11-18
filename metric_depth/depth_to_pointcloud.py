@@ -38,7 +38,7 @@ def create_comparison_cube():
     """
     cube = o3d.geometry.TriangleMesh.create_box(width=0.05, height=0.05, depth=0.05)
     cube.paint_uniform_color([1, 0, 0])  # Red color for visibility
-    cube.translate((0, 0, 0.7))  # Position the cube in front of the origin
+    cube.translate((0, 0, 0.1))  # Position the cube in front of the origin
     return cube
 
 def create_coordinate_axes():
@@ -56,9 +56,9 @@ def main():
                         help='Model encoder to use.')
     parser.add_argument('--load-from', default='checkpoints/depth_anything_v2_metric_hypersim_vitl.pth', type=str, required=False,
                         help='Path to the pre-trained model weights.')
-    parser.add_argument('--max-depth', default=20, type=float,
+    parser.add_argument('--max-depth', default=2, type=float,
                         help='Maximum depth value for the depth map.')
-    parser.add_argument('--img-path', default='test.JPG',type=str, required=False,
+    parser.add_argument('--img-path', default='test1.JPG',type=str, required=False,
                         help='Path to the input image or directory containing images.')
     parser.add_argument('--outdir', type=str, default='./vis_pointcloud',
                         help='Directory to save the output point clouds.')
@@ -135,9 +135,9 @@ def main():
         # Add the comparison cube and coordinate axes to the scene
         o3d.visualization.draw_geometries([pcd, comparison_cube, coordinate_axes])
 
-        # Save the point cloud to a file
-        output_file = os.path.join(args.outdir, f'pointcloud_{k+1}.ply')
-        o3d.io.write_point_cloud(output_file, pcd)
+        # # Save the point cloud to a file
+        # output_file = os.path.join(args.outdir, f'pointcloud_{k+1}.ply')
+        # o3d.io.write_point_cloud(output_file, pcd)
 
 if __name__ == '__main__':
     main()
